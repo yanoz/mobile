@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <title>AngularJS Fb Test</title>
+    
+    </head>
+    <body>
+        <div id="fb-root"></div>
+        <h1>index.html test get rid of me</h1>
+        <div data-ng-app="app">
+            <button ng-click="fbLogin()">FB connect</button>
+            <div data-ng-controller="fbCtrl">  
+        
+            </div>
+        </div>
+        <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
+        <script>
+            var BT = {};
+            BT.fbAppId = '559892864037339';
+            var app = angular.module( 'app', [] );
+            app.controller("fbCtrl", function ($scope) {
+               
+            });
+            app.run(function($rootScope,Facebook) { 
+                (function(d){
+                    var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+                    if (d.getElementById(id)) {
+                        return;
+                    }
+                    js = d.createElement('script');js.id = id;js.async = true;
+                    js.src = "http://connect.facebook.net/it_IT/all.js";
+                    ref.parentNode.insertBefore(js, ref);
+                }(document));
+                window.fbAsyncInit = function() {
+                    FB.init({
+                        appId      : BT.fbAppId, // App ID
+                        status     : true, // check login status
+                        cookie     : true, // enable cookies to allow the server to access the session
+                        xfbml      : true  // parse XFBML
+                    });
+                    $rootScope.fbLogin = Facebook.fbLogin;
+                };
+                
+            });
+            app.factory('Facebook', function () {
+               function fbLogin(callback){
+                   FB.login(function(response) {
+                    if (response.status==='connected') {
+                        var uid = response.authResponse.userID;
+                        callback(response.authResponse);
+                    }
+                    },
+                    {scope:'email'});
+               }
+               return {
+                   fbLogin : fbLogin
+               }
+            });
+        </script>
+    </body>
+</html>
